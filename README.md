@@ -1,23 +1,48 @@
-> Note:
-This is a template repository to kickstart the creation of a Python Vehicle App. Please create your own repository from this template repository by clicking the green button [`Use this template`](https://github.com/eclipse-velocitas/vehicle-app-python-template).
+# Seat-adjuster example
 
-# Vehicle App Development using Python
+:warning: This example is currently not executable from within the vehicle-app-pytthon-sdk's devContainer. Please use the "import example" feature of the related [vehicle-app-python-template repository](https://github.com/eclipse-velocitas/vehicle-app-python-template). Also, building the docker container for this example needs to be done after the import within the Python template's devContainer.
 
-![CI Workflow](https://github.com/eclipse-velocitas/vehicle-app-python-template/actions/workflows/ci.yml/badge.svg#branch=main)
-[![License: Apache](https://img.shields.io/badge/License-Apache-yellow.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
-This repository provides you with a complete development environment for your own Vehicle App based on the [Software defined vehicle platform](https://sdv.eclipse.org/) including a sample Vehicle App using the [Vehicle App Python SDK](https://github.com/eclipse-velocitas/vehicle-app-python-sdk). The development environment uses the [Development Container](https://code.visualstudio.com/docs/remote/create-dev-container#:~:text=%20Create%20a%20development%20container%20%201%20Path,additional%20software%20in%20your%20dev%20container.%20More%20) feature of Visual Studio Code.
+## Run this example from your Python app development repo
 
-## Documentation
-* [Velocitas Development Model](https://eclipse.dev/velocitas/docs/concepts/development_model/)
-* [Vehicle App SDK Overview](https://eclipse.dev/velocitas/docs/concepts/development_model/vehicle_app_sdk/)
+It is possible to import and run this example from your app development repository, which you already have created or could create from our [vehicle-app-python-template repository](https://github.com/eclipse-velocitas/vehicle-app-python-template).
 
-## Quickstart Tutorials
-1. [Setup and Explore Development Environment](https://eclipse.dev/velocitas/docs/tutorials/quickstart/)
-1. [Develop your own Vehicle Model](https://eclipse.dev/velocitas/docs/tutorials/vehicle_model_creation/)
-1. [Develop your own Vehicle App](https://eclipse.dev/velocitas/docs/tutorials/vehicle_app_development/)
+1. Importing the example
 
-## Contribution
-- [GitHub Issues](https://github.com/eclipse-velocitas/vehicle-app-python-template/issues)
-- [Mailing List](https://accounts.eclipse.org/mailing-list/velocitas-dev)
-- [Contribution](CONTRIBUTING.md)
+   Use the VS Code task `Import example app from SDK` (to get there press `Ctrl+Shift+P` and select `Tasks: Run Task`) and choose `seat-adjuster` from the list.
+
+   :warning: Make sure you have commited or stash all your possible changes within the `app` folder, because the files of that folder will be overwritten by the files of this example.
+
+2. Running this example with Dapr middleware
+
+   Use the VS Code tasks `Local Runtime - Up` and `Local Runtime - Run VehicleApp` to start the necessary runtime components and this app itself.
+
+   Alternatively, the app can also be deployed in a k3d runtime - use task `K3D Runtime - Deploy VehicleApp`.
+
+
+## Executing with "native" middleware (without Dapr runtime)
+
+If you like to run this example without using Dapr as middleware, you may need to provide some environment variables to the seat-adjuster process, which define the middleware type being _native_ and where to find the required runtime components:
+
+| Variable name                   | Default value              | Description
+|---------------------------------|----------------------------|-------------
+| `SDV_MIDDLEWARE_TYPE`           | `"dapr"`                   | Defines the middleware type -> set to `"native"`
+| `SDV_MQTT_ADDRESS`              | `"mqtt://localhost:1883"`  | Address (and port) of the MQTT broker
+| `SDV_VEHICLEDATABROKER_ADDRESS` | `"grpc://localhost:55555"` | Address (and port) of the KUKSA Data Broker
+
+
+## Building a Docker image
+
+This example app provides a Dockerfile to enable creating a Docker container image to run it.
+The image must be build passing the repositories root folder as build context, e.g.:
+
+``` bash
+docker build -f app/Dockerfile .
+```
+
+:warning: If your build environment works behind (corporate) **proxy**, please remember telling docker your proxy configuration.
+If you've set the respective environment variables, this might work:
+
+``` bash
+docker build -f app/Dockerfile . --build-arg http_proxy --build-arg HTTP_PROXY --build-arg https_proxy --build-arg HTTPS_PROXY --build-arg no_proxy --build-arg NO_PROXY
+```
